@@ -1,4 +1,4 @@
-# closetapp
+# Closet App
 
 A new Flutter project.
 
