@@ -46,4 +46,8 @@ class Clothes {
     ClothesFields.image: image
   };
 
+  static Clothes noneClothes = Clothes(
+    name: "None",
+    image: "assets/images/none.jpg"
+  );
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
 import 'package:closetapp/db/ClothingDatabase.dart';
 import 'package:closetapp/models/Clothes.dart';
 import 'dart:io';
@@ -61,7 +59,7 @@ class _ClothingTypeScreenState extends State<ClothingTypeScreen> {
       image: imageOfTheClothes
     );
 
-    await ClothesDatabase.instance.create(widget.clothingType.title, clothes);
+    await ClothesDatabase.instance.createClothes(widget.clothingType.title, clothes);
   }
   chooseImage() async {
     final PickedFile? imagePickedFile = await picker.getImage(source: ImageSource.camera);

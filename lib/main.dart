@@ -1,9 +1,12 @@
+import 'package:closetapp/models/Outfits.dart';
+import 'package:closetapp/screens/OutfitListScreen.dart';
 import 'package:closetapp/widgets/ClothingTypeCard.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'models/ClothingTypes.dart';
 import 'screens/ClothingTypeScreen.dart';
 import 'package:closetapp/db/ClothingDatabase.dart';
+import 'package:closetapp/screens/OutfitCreatorScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,6 +21,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   int _selectedClothingType = -1;
+  bool _creatingAnOutfit = false;
+  bool _showingOutfits = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,16 @@ class _MyAppState extends State<MyApp> {
                 _selectedClothingType = value
               });
             },
+            didStartCreatingOutfit: (value) {
+              setState(() {
+                _creatingAnOutfit = true;
+              });
+            },
+            isShowingOutfits: (value) {
+              setState(() {
+                _showingOutfits = true;
+              });
+            },
           )),
 
           if (_selectedClothingType != -1)
@@ -49,14 +64,43 @@ class _MyAppState extends State<MyApp> {
                 clothingType: clothingTypes[_selectedClothingType],
               ),
               key: ClothingTypeScreen.valueKey
-            )
+            ),
+          
+          if (_creatingAnOutfit)
+            MaterialPage(
+              child: OutfitCreatorScreen(
+                key: OutfitCreatorScreen.valueKey,
+              )
+            ),
+
+          if (_showingOutfits)
+            MaterialPage(
+              child: OutfitListScreen(
+                key: OutfitListScreen.valueKey,
+              ),
+          )
         ],
         onPopPage: (route, result) {
 
           final page = route.settings as MaterialPage;
 
-          if (page.key == ClothingTypeScreen.valueKey)
-            _selectedClothingType = -1;
+          if (page.key == ClothingTypeScreen.valueKey) {
+            setState(() {
+              _selectedClothingType = -1;
+            });
+          }
+
+          if (page.key == OutfitCreatorScreen.valueKey) {
+            setState(() {
+              _creatingAnOutfit = false;
+            });
+          }
+          
+          if (page.key == OutfitListScreen.valueKey) {
+            setState(() {
+              _showingOutfits = false;
+            });
+          }
 
           return route.didPop(result);
         },
@@ -65,17 +109,38 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({Key? key, required this.title, required this.didSelectClothingType}) : super(key: key);
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, required this.title, required this.didSelectClothingType, required this.didStartCreatingOutfit, required this.isShowingOutfits}) : super(key: key);
 
   final String title;
   final ValueChanged didSelectClothingType;
+  final ValueChanged didStartCreatingOutfit;
+  final ValueChanged isShowingOutfits;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<ClothingType> allButtons = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      for (var i = 0; i < clothingTypes.length; i++) {
+        this.allButtons.add(clothingTypes[i]);
+      }
+      allButtons.add(outfitsClothingType);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
       drawer: Drawer(
         child: ListView(
@@ -98,26 +163,29 @@ class MyHomePage extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         )
       ),
       body: GridView.builder(
-        itemCount: clothingTypes.length,
+        itemCount: allButtons.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
         ), 
         itemBuilder: (context, index) => ClothingTypeCard(
-          clothingType: clothingTypes[index],
+          clothingType: allButtons[index],
           onPress: () => {
-            didSelectClothingType(index)
+            if (index == 5) {
+              widget.isShowingOutfits(true)
+            } else {
+              widget.didSelectClothingType(index)
+            }
           },
         )),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          SnackBar sb = SnackBar(content: Text("\"Creating an outfit\" has not been implemented yet"));
-          ScaffoldMessenger.of(context).showSnackBar(sb);
+        onPressed: () {
+          widget.didStartCreatingOutfit(true);
         },
         child: Icon(Icons.checkroom),
       ),
