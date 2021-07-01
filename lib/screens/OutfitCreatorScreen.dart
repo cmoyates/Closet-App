@@ -3,7 +3,6 @@ import 'package:closetapp/db/ClothingDatabase.dart';
 import 'package:closetapp/models/Clothes.dart';
 import 'package:flutter/material.dart';
 import 'package:closetapp/models/ClothingTypes.dart';
-import 'package:closetapp/db/ClothingDatabase.dart';
 import 'package:closetapp/models/Outfits.dart';
 
 class OutfitCreatorScreen extends StatefulWidget {
@@ -67,7 +66,7 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
   }
 
   addClothingToOutfit(index) async {
-    totalOutfit.add((clothesList[index].name == "None") ? -1 : index);
+    totalOutfit.add((clothesList[index].name == "None") ? -1 : clothesList[index].id!);
     clothingTypeCount++;
     if (clothingTypeCount < 5) {
       currentClothingType = clothingTypeOrder[clothingTypeCount];
@@ -81,11 +80,11 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
       });
       final outfit = Outfits(
         name: outfitName,
-        hatIndex: totalOutfit[0],
-        jacketIndex: totalOutfit[1],
-        pantsIndex: totalOutfit[2],
-        shirtIndex: totalOutfit[3],
-        shoesIndex: totalOutfit[4]
+        hatIndex: totalOutfit[4],
+        jacketIndex: totalOutfit[3],
+        pantsIndex: totalOutfit[1],
+        shirtIndex: totalOutfit[0],
+        shoesIndex: totalOutfit[2]
       );
       await ClothesDatabase.instance.createOutfits(outfit);
       SnackBar sb = SnackBar(content: Text("Created outfit: $outfitName"));
