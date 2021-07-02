@@ -48,21 +48,27 @@ class _OutfitListScreenState extends State<OutfitListScreen> {
     List<List<Clothes>> allClothesList = [];
     
     for (var i = 0; i < allOutfits.length; i++) {
+      print(i);
         List<Clothes> clothesList = [];
 
-        if (allOutfits[i].hatIndex != -1) {
-          Clothes hat = await ClothesDatabase.instance.readClothes("Hats", allOutfits[i].hatIndex);
+        if (allOutfits[i].clothesIds["Hats"] != -1) {
+          print("Hat");
+          Clothes hat = await ClothesDatabase.instance.readClothes("Hats", allOutfits[i].clothesIds["Hats"]!);
           clothesList.add(hat);
         }
-        Clothes shirt = await ClothesDatabase.instance.readClothes("Shirts", allOutfits[i].shirtIndex);
+        print("Shirt");
+        Clothes shirt = await ClothesDatabase.instance.readClothes("Shirts", allOutfits[i].clothesIds["Shirts"]!);
         clothesList.add(shirt);
-        if (allOutfits[i].jacketIndex != -1) {
-          Clothes jacket = await ClothesDatabase.instance.readClothes("Jackets", allOutfits[i].jacketIndex);
+        if (allOutfits[i].clothesIds["Jackets"] != -1) {
+          print("Jacket");
+          Clothes jacket = await ClothesDatabase.instance.readClothes("Jackets", allOutfits[i].clothesIds["Jackets"]!);
           clothesList.add(jacket);
         }
-        Clothes pants = await ClothesDatabase.instance.readClothes("Pants", allOutfits[i].pantsIndex);
+        print("Pants");
+        Clothes pants = await ClothesDatabase.instance.readClothes("Pants", allOutfits[i].clothesIds["Pants"]!);
         clothesList.add(pants);
-        Clothes shoes = await ClothesDatabase.instance.readClothes("Shoes", allOutfits[i].shoesIndex);
+        print("Shoes");
+        Clothes shoes = await ClothesDatabase.instance.readClothes("Shoes", allOutfits[i].clothesIds["Shoes"]!);
         clothesList.add(shoes);
 
         allClothesList.add(clothesList);
@@ -71,6 +77,87 @@ class _OutfitListScreenState extends State<OutfitListScreen> {
     setState(() {
       allClothes = allClothesList;
     });
+  }
+
+  showContextMenu(BuildContext context, int index) async {
+    return await showDialog(context: context, builder: (context) { return AlertDialog(
+      title: Center(child: Text(allOutfits[index].name)),
+      actionsPadding: EdgeInsets.symmetric(horizontal: 10),
+      actions: [
+        MaterialButton(
+          child: Text("Rename"),
+          onPressed: () {
+            Navigator.pop(context);
+            showRenamePopup(context, index);
+          },
+        ),
+        MaterialButton(
+          child: Text("Delete"),
+          onPressed: () {
+            Navigator.pop(context);
+            showDeleteConfimation(context, index);
+          },
+        ),
+      ],
+    );});
+  }
+
+  showRenamePopup(BuildContext context, int index) async {
+
+    TextEditingController customController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    
+    return await showDialog(context: context, builder: (context) {return AlertDialog(
+      title: Text("Rename ${allOutfits[index].name}:"),
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          controller: customController,
+          autofocus: true,
+          validator: (value) => (value == null || value.isEmpty) ? "Name cannot be blank" : null,
+        )
+      ),
+      actions: [
+        MaterialButton(
+          child: Text("Submit"),
+          onPressed: () async {
+            if (!_formKey.currentState!.validate()) {return;}
+            
+            Outfits tempOutfit = allOutfits[index].copy(name: customController.text);
+
+            await ClothesDatabase.instance.updateOutfits(tempOutfit);
+
+            await refreshOutfits();
+
+            Navigator.pop(context);
+          }
+        )
+      ],
+    );});
+  }
+
+  showDeleteConfimation(context, index) async {
+    return await showDialog(context: context, builder: (context) {return AlertDialog(
+      title: Text("Are you sure you want to delete ${allOutfits[index].name}?"),
+      actions: [
+        MaterialButton(
+          child: Text("Yes"),
+          onPressed: () async {
+            await ClothesDatabase.instance.deleteOutfits(allOutfits[index].id!);
+
+            await refreshOutfits();
+
+            Navigator.pop(context);
+          }
+        ),
+        MaterialButton(
+          child: Text("No"),
+          onPressed: () {
+            Navigator.pop(context);
+          }
+        ),
+      ],
+    );});
   }
 
   @override
@@ -88,12 +175,17 @@ class _OutfitListScreenState extends State<OutfitListScreen> {
               final int index = allOutfits.indexOf(outfit);
               return ExpansionPanelRadio(
                 value: index,
-                headerBuilder: (context, isExpanded) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  child: Text(
-                    outfit.name,
-                    style: TextStyle(
-                      fontSize: 22
+                headerBuilder: (context, isExpanded) => GestureDetector(
+                  onLongPress: () async {
+                    await showContextMenu(context, index);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Text(
+                      outfit.name,
+                      style: TextStyle(
+                        fontSize: 22
+                      ),
                     ),
                   ),
                 ),

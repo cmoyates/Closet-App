@@ -90,11 +90,13 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
       if (outfitName == null) {showSnackBar("Cancelled"); return null;}
       final outfit = Outfits(
         name: outfitName,
-        hatIndex: totalOutfit[4],
-        jacketIndex: totalOutfit[3],
-        pantsIndex: totalOutfit[1],
-        shirtIndex: totalOutfit[0],
-        shoesIndex: totalOutfit[2]
+        clothesIds: {
+          "Hats": totalOutfit[4],
+          "Jackets": totalOutfit[3],
+          "Pants": totalOutfit[1],
+          "Shirts": totalOutfit[0],
+          "Shoes": totalOutfit[2]
+        },
       );
       await ClothesDatabase.instance.createOutfits(outfit);
       return outfitName;

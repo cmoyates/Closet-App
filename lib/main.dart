@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
           else if (page.key == OutfitCreatorScreen.valueKey) {
             setState(() {
               _creatingAnOutfit = false;
-              if (result) {
+              if (result != null && result) {
                 _showingOutfits = true;
               }
             });
@@ -140,6 +140,29 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  showResetConfimation(context) async {
+    return await showDialog(context: context, builder: (context) {return AlertDialog(
+      title: Text("Are you sure you want to reset EVERYTHING?"),
+      actions: [
+        MaterialButton(
+          child: Text("Yes"),
+          onPressed: () async {
+            ClothesDatabase.instance.resetAll();
+            final dir = await getApplicationDocumentsDirectory();
+            dir.deleteSync(recursive: true);
+            Navigator.pop(context);
+          }
+        ),
+        MaterialButton(
+          child: Text("No"),
+          onPressed: () {
+            Navigator.pop(context);
+          }
+        ),
+      ],
+    );});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,9 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 primary: Colors.redAccent
               ),
               onPressed: () async {
-                ClothesDatabase.instance.resetAll();
-                final dir = await getApplicationDocumentsDirectory();
-                dir.deleteSync(recursive: true);
+                await showResetConfimation(context);
                 Navigator.pop(context);
               },
               child: Padding(

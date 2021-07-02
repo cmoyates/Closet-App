@@ -1,3 +1,5 @@
+import 'package:closetapp/models/ClothingTypes.dart';
+
 class OutfitsFields {
   static final List<String> values = [
     id, name, hatIndex, jacketIndex, pantsIndex, shirtIndex, shoesIndex
@@ -15,61 +17,57 @@ class OutfitsFields {
 class Outfits {
   final int? id;
   final String name;
-  final int hatIndex;
-  final int jacketIndex;
-  final int pantsIndex;
-  final int shirtIndex;
-  final int shoesIndex;
+  final Map<String, int> clothesIds;
 
   const Outfits({
     this.id,
     required this.name,
-    required this.hatIndex,
-    required this.jacketIndex,
-    required this.pantsIndex,
-    required this.shirtIndex,
-    required this.shoesIndex,
+    required this.clothesIds
   });
 
 
   Outfits copy({
     int? id,
     String? name,
-    int? hatIndex,
-    int? jacketIndex,
-    int? pantsIndex,
-    int? shirtIndex,
-    int? shoesIndex,
-  }) =>
-    Outfits(
+    Map<String, int>? clothesIds,
+  }) {
+
+    final Map <String, int> tempClothesIds = {};
+
+    for (var i = 0; i < this.clothesIds.length; i++) {
+      tempClothesIds[clothingTypes[i].title] = this.clothesIds[clothingTypes[i].title]!;
+    }
+
+    return Outfits(
       id: id ?? this.id,
       name: name ?? this.name,
-      hatIndex: hatIndex ?? this.hatIndex,
-      jacketIndex: jacketIndex ?? this.jacketIndex,
-      pantsIndex: pantsIndex ?? this.pantsIndex,
-      shirtIndex: shirtIndex ?? this.shirtIndex,
-      shoesIndex: shoesIndex ?? this.shoesIndex,
+      clothesIds: clothesIds ?? tempClothesIds,
     );
+  }
+
+    
 
 
   static Outfits fromJson(Map<String, Object?> json) => Outfits(
     id: json[OutfitsFields.id] as int?,
     name: json[OutfitsFields.name] as String,
-    hatIndex: json[OutfitsFields.hatIndex] as int,
-    jacketIndex: json[OutfitsFields.jacketIndex] as int,
-    pantsIndex: json[OutfitsFields.pantsIndex] as int,
-    shirtIndex: json[OutfitsFields.shirtIndex] as int,
-    shoesIndex: json[OutfitsFields.shoesIndex] as int,
+    clothesIds: {
+      "Hats": json[OutfitsFields.hatIndex] as int,
+      "Jackets": json[OutfitsFields.jacketIndex] as int,
+      "Pants": json[OutfitsFields.pantsIndex] as int,
+      "Shirts": json[OutfitsFields.shirtIndex] as int,
+      "Shoes": json[OutfitsFields.shoesIndex] as int,
+    }
   );
 
 
   Map<String, Object?> toJson() => {
     OutfitsFields.id: id,
     OutfitsFields.name: name,
-    OutfitsFields.hatIndex: hatIndex,
-    OutfitsFields.jacketIndex: jacketIndex,
-    OutfitsFields.pantsIndex: pantsIndex,
-    OutfitsFields.shirtIndex: shirtIndex,
-    OutfitsFields.shoesIndex: shoesIndex,
+    OutfitsFields.hatIndex: clothesIds[clothingTypes[0].title],
+    OutfitsFields.jacketIndex: clothesIds[clothingTypes[1].title],
+    OutfitsFields.pantsIndex: clothesIds[clothingTypes[2].title],
+    OutfitsFields.shirtIndex: clothesIds[clothingTypes[3].title],
+    OutfitsFields.shoesIndex: clothesIds[clothingTypes[4].title],
   };
 }
