@@ -45,30 +45,23 @@ class _OutfitListScreenState extends State<OutfitListScreen> {
   }
 
   Future loadClothingItems() async {
-    print("Loading all clothes");
     List<List<Clothes>> allClothesList = [];
     
     for (var i = 0; i < allOutfits.length; i++) {
-        print("Outfit $i");
         List<Clothes> clothesList = [];
 
         if (allOutfits[i].hatIndex != -1) {
-          print("hat");
           Clothes hat = await ClothesDatabase.instance.readClothes("Hats", allOutfits[i].hatIndex);
           clothesList.add(hat);
         }
-        print("shirt");
         Clothes shirt = await ClothesDatabase.instance.readClothes("Shirts", allOutfits[i].shirtIndex);
         clothesList.add(shirt);
         if (allOutfits[i].hatIndex != -1) {
-          print("jacket");
           Clothes jacket = await ClothesDatabase.instance.readClothes("Jackets", allOutfits[i].jacketIndex);
           clothesList.add(jacket);
         }
-        print("pants");
         Clothes pants = await ClothesDatabase.instance.readClothes("Pants", allOutfits[i].pantsIndex);
         clothesList.add(pants);
-        print("shoes");
         Clothes shoes = await ClothesDatabase.instance.readClothes("Shoes", allOutfits[i].shoesIndex);
         clothesList.add(shoes);
 
@@ -129,7 +122,6 @@ class _OutfitListScreenState extends State<OutfitListScreen> {
                     ],
                   )).toList(),
                 ),
-                //isExpanded: (_isOpen.length == 0) ? false : _isOpen[index],
                 canTapOnHeader: true,
               );
             }).toList(),

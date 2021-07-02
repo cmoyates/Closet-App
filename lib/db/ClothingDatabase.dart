@@ -68,7 +68,6 @@ class ClothesDatabase {
 
     final id = await db.insert("Outfits", outfit.toJson());
 
-    print("Added outfit: ${outfit.name}");
     return outfit.copy(id: id);
   }
 
@@ -117,7 +116,6 @@ class ClothesDatabase {
 
     final result = await db.query("Outfits");
     
-    print("Reading all outfits");
     return result.map((json) => Outfits.fromJson(json)).toList();
   }
 

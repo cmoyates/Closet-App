@@ -48,14 +48,15 @@ class _MyAppState extends State<MyApp> {
             },
             didStartCreatingOutfit: (value) {
               setState(() {
-                _creatingAnOutfit = true;
+                _creatingAnOutfit = value;
               });
             },
             isShowingOutfits: (value) {
               setState(() {
-                _showingOutfits = true;
+                _showingOutfits = value;
               });
             },
+            key: MyHomePage.valueKey,
           )),
 
           if (_selectedClothingType != -1)
@@ -69,15 +70,15 @@ class _MyAppState extends State<MyApp> {
           if (_creatingAnOutfit)
             MaterialPage(
               child: OutfitCreatorScreen(
-                key: OutfitCreatorScreen.valueKey,
-              )
+              ),
+              key: OutfitCreatorScreen.valueKey,
             ),
 
           if (_showingOutfits)
             MaterialPage(
               child: OutfitListScreen(
-                key: OutfitListScreen.valueKey,
               ),
+              key: OutfitListScreen.valueKey,
           )
         ],
         onPopPage: (route, result) {
@@ -89,14 +90,12 @@ class _MyAppState extends State<MyApp> {
               _selectedClothingType = -1;
             });
           }
-
-          if (page.key == OutfitCreatorScreen.valueKey) {
+          else if (page.key == OutfitCreatorScreen.valueKey) {
             setState(() {
               _creatingAnOutfit = false;
             });
           }
-          
-          if (page.key == OutfitListScreen.valueKey) {
+          else if (page.key == OutfitListScreen.valueKey) {
             setState(() {
               _showingOutfits = false;
             });
@@ -112,10 +111,12 @@ class _MyAppState extends State<MyApp> {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title, required this.didSelectClothingType, required this.didStartCreatingOutfit, required this.isShowingOutfits}) : super(key: key);
 
+  static const valueKey = ValueKey("MyHomePage");
+
   final String title;
-  final ValueChanged didSelectClothingType;
-  final ValueChanged didStartCreatingOutfit;
-  final ValueChanged isShowingOutfits;
+  final ValueChanged<int> didSelectClothingType;
+  final ValueChanged<bool> didStartCreatingOutfit;
+  final ValueChanged<bool> isShowingOutfits;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
