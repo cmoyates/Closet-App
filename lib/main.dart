@@ -1,4 +1,3 @@
-import 'package:closetapp/models/Outfits.dart';
 import 'package:closetapp/screens/OutfitListScreen.dart';
 import 'package:closetapp/widgets/ClothingTypeCard.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +6,16 @@ import 'models/ClothingTypes.dart';
 import 'screens/ClothingTypeScreen.dart';
 import 'package:closetapp/db/ClothingDatabase.dart';
 import 'package:closetapp/screens/OutfitCreatorScreen.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
+
   runApp(MyApp());
 }
 
@@ -23,6 +30,8 @@ class _MyAppState extends State<MyApp> {
   int _selectedClothingType = -1;
   bool _creatingAnOutfit = false;
   bool _showingOutfits = false;
+
+  
 
   @override
   Widget build(BuildContext context) {
