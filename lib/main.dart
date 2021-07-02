@@ -154,6 +154,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ClothesDatabase.instance.resetAll();
                 final dir = await getApplicationDocumentsDirectory();
                 dir.deleteSync(recursive: true);
+                Navigator.pop(context);
+                
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

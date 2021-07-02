@@ -87,6 +87,7 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
         shoesIndex: totalOutfit[2]
       );
       await ClothesDatabase.instance.createOutfits(outfit);
+      Navigator.pop(context);
       SnackBar sb = SnackBar(content: Text("Created outfit: $outfitName"));
       ScaffoldMessenger.of(context).showSnackBar(sb);
     }
