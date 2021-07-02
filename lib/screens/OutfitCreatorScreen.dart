@@ -4,6 +4,7 @@ import 'package:closetapp/models/Clothes.dart';
 import 'package:flutter/material.dart';
 import 'package:closetapp/models/ClothingTypes.dart';
 import 'package:closetapp/models/Outfits.dart';
+import 'package:flutter/services.dart';
 
 class OutfitCreatorScreen extends StatefulWidget {
   OutfitCreatorScreen({Key? key}) : super(key: key);
@@ -23,7 +24,13 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
   int currentClothingType = 3;
   List<int> clothingTypeOrder = [3, 2, 4, 1, 0];
   bool isLoading = false;
-  String outfitName = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    refreshClothes();
+  }
 
   Future refreshClothes() async {
     setState(() => isLoading = true);
@@ -35,26 +42,31 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
     setState(() => isLoading = false);
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    refreshClothes();
+  showSnackBar(stringToShow) {
+    SnackBar sb = SnackBar(content: Text(stringToShow));
+    ScaffoldMessenger.of(context).showSnackBar(sb);
   }
 
   createAlertDialog(BuildContext context) async {
 
     TextEditingController customController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
 
     return showDialog(context: context, builder: (context) {
       return AlertDialog(
         title: Text("Name this outfit:"),
-        content: TextField(
-          controller: customController,
+        content: Form(
+          key: _formKey,
+          child: TextFormField(
+            controller: customController,
+            autofocus: true,
+            validator: (value) => (value == null || value.isEmpty) ? "Outfit name cannot be blank" : null,
+          ),
         ),
         actions: [
           MaterialButton(
             onPressed: () {
+              if (!_formKey.currentState!.validate()) {return;}
               Navigator.of(context).pop(customController.text.toString());
             },
             elevation: 5.0,
@@ -68,16 +80,14 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
   addClothingToOutfit(index) async {
     totalOutfit.add((clothesList[index].name == "None") ? -1 : clothesList[index].id!);
     clothingTypeCount++;
-    if (clothingTypeCount < 5) {
+    if (clothingTypeCount < clothingTypes.length) {
       currentClothingType = clothingTypeOrder[clothingTypeCount];
-    await refreshClothes();
+      await refreshClothes();
+      return null;
     }
     else {
-      await createAlertDialog(context).then((value) async {
-        setState(() {
-          outfitName = value;
-        });
-      });
+      final String? outfitName = await createAlertDialog(context);
+      if (outfitName == null) {showSnackBar("Cancelled"); return null;}
       final outfit = Outfits(
         name: outfitName,
         hatIndex: totalOutfit[4],
@@ -87,9 +97,7 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
         shoesIndex: totalOutfit[2]
       );
       await ClothesDatabase.instance.createOutfits(outfit);
-      Navigator.pop(context);
-      SnackBar sb = SnackBar(content: Text("Created outfit: $outfitName"));
-      ScaffoldMessenger.of(context).showSnackBar(sb);
+      return outfitName;
     }
   }
 
@@ -134,7 +142,14 @@ class _OutfitCreatorScreenState extends State<OutfitCreatorScreen> {
             ),
           ),
           onTap: () async {
-            await addClothingToOutfit(index);
+            final String? outfitName = await addClothingToOutfit(index);
+            if (clothingTypeCount >= clothingTypes.length) {
+              final bool success = outfitName != null;
+              if (success){
+                showSnackBar("Created outfit: $outfitName");
+              }
+              Navigator.pop(context, success);
+            }
           },
         )
       )

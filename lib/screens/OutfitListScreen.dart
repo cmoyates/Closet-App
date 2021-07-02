@@ -56,7 +56,7 @@ class _OutfitListScreenState extends State<OutfitListScreen> {
         }
         Clothes shirt = await ClothesDatabase.instance.readClothes("Shirts", allOutfits[i].shirtIndex);
         clothesList.add(shirt);
-        if (allOutfits[i].hatIndex != -1) {
+        if (allOutfits[i].jacketIndex != -1) {
           Clothes jacket = await ClothesDatabase.instance.readClothes("Jackets", allOutfits[i].jacketIndex);
           clothesList.add(jacket);
         }

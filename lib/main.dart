@@ -93,6 +93,9 @@ class _MyAppState extends State<MyApp> {
           else if (page.key == OutfitCreatorScreen.valueKey) {
             setState(() {
               _creatingAnOutfit = false;
+              if (result) {
+                _showingOutfits = true;
+              }
             });
           }
           else if (page.key == OutfitListScreen.valueKey) {
@@ -155,7 +158,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 final dir = await getApplicationDocumentsDirectory();
                 dir.deleteSync(recursive: true);
                 Navigator.pop(context);
-                
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
