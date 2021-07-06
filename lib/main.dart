@@ -219,7 +219,15 @@ class _MyHomePageState extends State<MyHomePage> {
         )),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          final pants = await ClothesDatabase.instance.readAllClothes("Pants");
+          final shirts = await ClothesDatabase.instance.readAllClothes("Shirts");
+          final shoes = await ClothesDatabase.instance.readAllClothes("Shoes");
+          if (pants.isEmpty || shirts.isEmpty || shoes.isEmpty) {
+            SnackBar sb = SnackBar(content: Text("You need at least 1 shirt, one pair of pants, and one pair of shoes to make an outfit!"));
+            ScaffoldMessenger.of(context).showSnackBar(sb);
+            return;
+          }
           widget.didStartCreatingOutfit(true);
         },
         child: Icon(Icons.checkroom),
