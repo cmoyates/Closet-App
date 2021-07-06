@@ -189,6 +189,7 @@ class _ClothingTypeScreenState extends State<ClothingTypeScreen> {
               }
             }
 
+            await File(clothesList[index].image).delete();
             await ClothesDatabase.instance.deleteClothes(widget.clothingType.title, clothesList[index].id!);
 
             await refreshClothes();
