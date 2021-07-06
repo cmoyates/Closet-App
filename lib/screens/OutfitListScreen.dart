@@ -166,7 +166,15 @@ class _OutfitListScreenState extends State<OutfitListScreen> {
       appBar: AppBar(
         title: Text("Outfit List"),
       ),
-      body: ListView(
+      body: (allOutfits.isEmpty) ? Center(
+        child: Text(
+          "You haven't added any outfits yet!",
+          style: TextStyle(
+            fontSize: 20
+          ),
+        ),
+      ): 
+      ListView(
         children: [
           (allClothes.length != 0) ? 
           ExpansionPanelList.radio(

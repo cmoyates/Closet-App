@@ -222,7 +222,15 @@ class _ClothingTypeScreenState extends State<ClothingTypeScreen> {
         },
         child: Icon(Icons.add),
       ),
-      body: GridView.builder(
+      body: (clothesList.isEmpty) ? Center(
+        child: Text(
+          "You haven't added any ${widget.clothingType.title.toLowerCase()} yet!",
+          style: TextStyle(
+            fontSize: 20
+          ),
+        ),
+      ) : 
+      GridView.builder(
         itemCount: clothesList.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
