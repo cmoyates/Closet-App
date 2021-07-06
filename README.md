@@ -1,17 +1,14 @@
 # Closet App
 
-A new Flutter project.
+This is an app made to catalogue all of the clothes in your closet and help you plan outfits.
 
-## Getting Started
+The main purpose of this app was to teach myself how to work with databases, as well as android app dev in general.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-"# Closet-App" 
+## Credits
+Stock photos from Unsplash
+- Hat: https://unsplash.com/photos/2loKxdi6Hmo
+- Jacket: https://unsplash.com/photos/ohWf6YuzOQk
+- Pants: https://unsplash.com/photos/EtOMMg1nSR8
+- Shirt: https://unsplash.com/photos/xPJYL0l5Ii8
+- Shoes: https://unsplash.com/photos/WlB8TsI_th0
+<div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
