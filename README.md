@@ -1,6 +1,6 @@
 # Closet App
 
-This is an app made to catalogue your closet and help plan outfits.
+This is an app made to catalog your closet and help plan outfits.
 
 The main purpose of this app was to teach myself how to work with databases, as well as android app dev in general.
 
