@@ -1,12 +1,10 @@
 import 'package:closetapp/screens/OutfitListScreen.dart';
-import 'package:closetapp/widgets/ClothingTypeCard.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'models/ClothingTypes.dart';
 import 'screens/ClothingTypeScreen.dart';
-import 'package:closetapp/db/ClothingDatabase.dart';
 import 'package:closetapp/screens/OutfitCreatorScreen.dart';
 import 'package:flutter/services.dart';
+import 'package:closetapp/screens/HomeScreen.dart';
 
 void main() {
 
@@ -31,8 +29,6 @@ class _MyAppState extends State<MyApp> {
   bool _creatingAnOutfit = false;
   bool _showingOutfits = false;
 
-  
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -48,8 +44,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: ThemeMode.dark,
       home: Navigator(
         pages: [
-          MaterialPage(child: MyHomePage(
-            title: 'Closet App',
+          MaterialPage(child: HomeScreen(
             didSelectClothingType: (value) {
               setState(() => {
                 _selectedClothingType = value
@@ -65,7 +60,7 @@ class _MyAppState extends State<MyApp> {
                 _showingOutfits = value;
               });
             },
-            key: MyHomePage.valueKey,
+            key: HomeScreen.valueKey,
           )),
 
           if (_selectedClothingType != -1)
@@ -115,122 +110,6 @@ class _MyAppState extends State<MyApp> {
 
           return route.didPop(result);
         },
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title, required this.didSelectClothingType, required this.didStartCreatingOutfit, required this.isShowingOutfits}) : super(key: key);
-
-  static const valueKey = ValueKey("MyHomePage");
-
-  final String title;
-  final ValueChanged<int> didSelectClothingType;
-  final ValueChanged<bool> didStartCreatingOutfit;
-  final ValueChanged<bool> isShowingOutfits;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  List<ClothingType> allButtons = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    setState(() {
-      for (var i = 0; i < clothingTypes.length; i++) {
-        this.allButtons.add(clothingTypes[i]);
-      }
-      allButtons.add(outfitsClothingType);
-    });
-  }
-
-  showResetConfimation(context) async {
-    return await showDialog(context: context, builder: (context) {return AlertDialog(
-      title: Text("Are you sure you want to reset EVERYTHING?"),
-      actions: [
-        MaterialButton(
-          child: Text("Yes"),
-          onPressed: () async {
-            ClothesDatabase.instance.resetAll();
-            final dir = await getApplicationDocumentsDirectory();
-            dir.deleteSync(recursive: true);
-            Navigator.pop(context);
-          }
-        ),
-        MaterialButton(
-          child: Text("No"),
-          onPressed: () {
-            Navigator.pop(context);
-          }
-        ),
-      ],
-    );});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.redAccent
-              ),
-              onPressed: () async {
-                await showResetConfimation(context);
-                Navigator.pop(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Reset",
-                  style: TextStyle(
-                    fontSize: 75
-                  ),
-                ),
-              ),
-            ),
-          ],
-        )
-      ),
-      body: GridView.builder(
-        itemCount: allButtons.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ), 
-        itemBuilder: (context, index) => ClothingTypeCard(
-          clothingType: allButtons[index],
-          onPress: () => {
-            if (index == 5) {
-              widget.isShowingOutfits(true)
-            } else {
-              widget.didSelectClothingType(index)
-            }
-          },
-        )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final pants = await ClothesDatabase.instance.readAllClothes("Pants");
-          final shirts = await ClothesDatabase.instance.readAllClothes("Shirts");
-          final shoes = await ClothesDatabase.instance.readAllClothes("Shoes");
-          if (pants.isEmpty || shirts.isEmpty || shoes.isEmpty) {
-            SnackBar sb = SnackBar(content: Text("You need at least 1 shirt, one pair of pants, and one pair of shoes to make an outfit!"));
-            ScaffoldMessenger.of(context).showSnackBar(sb);
-            return;
-          }
-          widget.didStartCreatingOutfit(true);
-        },
-        child: Icon(Icons.checkroom),
       ),
     );
   }

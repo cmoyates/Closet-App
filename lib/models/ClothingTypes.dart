@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-
+// The clothing type class
 class ClothingType {
   final String image, title, singular;
   final int id;
@@ -12,6 +11,7 @@ class ClothingType {
   });
 }
 
+// A list of all of the currently supported clothing types
 List<ClothingType> clothingTypes = [
   ClothingType(
     id: 0,
@@ -45,6 +45,7 @@ List<ClothingType> clothingTypes = [
   ),
 ];
 
+// A clothing type object to be used by the "Outfits" button on the home screen
 final ClothingType outfitsClothingType = ClothingType(
   image: "assets/images/outfits.jpg", 
   title: "Outfits", 

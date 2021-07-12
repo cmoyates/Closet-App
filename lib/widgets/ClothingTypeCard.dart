@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:closetapp/models/ClothingTypes.dart';
 
 class ClothingTypeCard extends StatelessWidget {
+  // The type of clothing being shown by the card
   final ClothingType clothingType;
-
+  // The function that will run when the card is "pressed" (tapped)
   final Function onPress;
 
   const ClothingTypeCard({Key? key, required this.clothingType, required this.onPress}) : super(key: key);
